@@ -7,16 +7,38 @@ namespace QueryService.Services;
 
 class BookUpdateService : IBookUpdateService
 {
-    private readonly BookContext _context;
+    private readonly BookUpdateContext _context;
 
-    public BookUpdateService(BookContext context)
+    public BookUpdateService(BookUpdateContext context)
     {
         _context = context;
     }
 
     public async Task UpdateAsync(BookMessageViewModel viewModel)
     {
-        throw new NotImplementedException();
+        switch (viewModel.CommandType)
+        {
+            case CommandType.Create:
+            {
+                await CreateFromMessageAsync(viewModel);
+                return;
+            }
+            case CommandType.Update:
+            {
+                await UpdateFromMessageAsync(viewModel);
+                return;
+            }
+            case CommandType.Delete:
+            {
+                await DeleteFromMessageAsync(viewModel);
+                return;
+            }
+            default:
+            {
+                return;
+            }
+                
+        }
     }
 
     private async Task CreateFromMessageAsync(BookMessageViewModel viewModel)

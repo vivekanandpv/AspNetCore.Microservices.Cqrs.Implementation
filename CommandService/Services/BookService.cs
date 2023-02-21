@@ -1,5 +1,6 @@
 using CommandService.DataAccess;
 using CommandService.Models;
+using CommandService.MQ;
 using CommandService.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +9,12 @@ namespace CommandService.Services;
 class BookService : IBookService
 {
     private readonly BookContext _context;
+    private readonly IRabbitMQManager _rabbitMqManager;
 
-    public BookService(BookContext context)
+    public BookService(BookContext context, IRabbitMQManager rabbitMqManager)
     {
         _context = context;
+        _rabbitMqManager = rabbitMqManager;
     }
 
     public async Task CreateAsync(BookCreateViewModel viewModel)
@@ -35,6 +38,8 @@ class BookService : IBookService
             Title = book.Title,
             BookId = book.BookId
         };
+        
+        _rabbitMqManager.Publish(message, "ms-exchange", "topic", "cqrs");
     }
 
     public async Task UpdateAsync(int id, BookUpdateViewModel viewModel)
@@ -55,6 +60,8 @@ class BookService : IBookService
             Title = book.Title,
             BookId = book.BookId
         };
+        
+        _rabbitMqManager.Publish(message, "ms-exchange", "topic", "cqrs");
     }
 
     public async Task DeleteAsync(int id)
@@ -70,6 +77,8 @@ class BookService : IBookService
             CommandType = CommandType.Delete,
             BookId = book.BookId
         };
+        
+        _rabbitMqManager.Publish(message, "ms-exchange", "topic", "cqrs");
     }
 
     private async Task<Book> GetOneById(int id)

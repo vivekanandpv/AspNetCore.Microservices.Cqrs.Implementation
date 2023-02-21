@@ -1,7 +1,7 @@
-using CommandService.Models;
 using Microsoft.EntityFrameworkCore;
+using QueryService.Models;
 
-namespace CommandService.DataAccess;
+namespace QueryService.DataAccess;
 
 public class BookContext : DbContext
 {

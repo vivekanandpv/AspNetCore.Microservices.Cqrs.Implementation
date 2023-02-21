@@ -1,6 +1,6 @@
-namespace CommandService.Models;
+namespace QueryService.Models;
 
-public class RabbitMQConfig
+public class RabbitMqConfig
 {
     public string UserName { get; set; }
     public string Password { get; set; }
